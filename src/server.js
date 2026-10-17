@@ -1,6 +1,7 @@
 import express from 'express';
 import { createPool, migrate, getPlan, recordEvent } from './db.js';
 import { responseTwiml } from './voice.js';
+import { runMorning } from './runMorning.js';
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -16,6 +17,19 @@ app.get('/health', async (_req, res) => {
     res.json({ ok: true, database: true });
   } catch (error) {
     res.status(503).json({ ok: false, database: false, error: error.message });
+  }
+});
+
+app.post('/admin/run-morning', async (req, res) => {
+  if (!process.env.AGENT_TRIGGER_TOKEN || req.get('authorization') !== `Bearer ${process.env.AGENT_TRIGGER_TOKEN}`) {
+    return res.status(401).json({ ok: false, error: 'unauthorized' });
+  }
+  try {
+    const result = await runMorning();
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
