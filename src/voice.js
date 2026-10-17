@@ -8,7 +8,7 @@ function xmlEscape(value) {
 export function briefingTwiml(briefing, baseUrl) {
   const safe = xmlEscape(briefing);
   const action = `${baseUrl.replace(/\/$/, '')}/voice/respond`;
-  return `<Response><Gather input="speech" method="POST" action="${xmlEscape(action)}" speechTimeout="auto" language="en-KE"><Say language="en-KE" voice="Polly.Joanna">${safe}</Say><Say language="en-KE" voice="Polly.Joanna">You can tell me to change your plan, or say done to finish.</Say></Gather><Say language="en-KE" voice="Polly.Joanna">No response received. Have a productive day.</Say></Response>`;
+  return `<Response><Gather input="speech" method="POST" action="${xmlEscape(action)}" speechTimeout="auto" language="en-KE"><Say language="en-KE" voice="Polly.Joanna">${safe}</Say><Say language="en-KE" voice="Polly.Joanna">You can say repeat, done, or tell me an instruction to record.</Say></Gather><Say language="en-KE" voice="Polly.Joanna">No response received. Have a productive day.</Say></Response>`;
 }
 
 export function responseTwiml(message, baseUrl) {
@@ -25,7 +25,7 @@ export function createTwilioClient() {
 
 export async function placeMorningCall({ briefing, baseUrl }) {
   const client = createTwilioClient();
-  const call = await client.calls.create({
+  return client.calls.create({
     to: requiredEnv('AGENT_TO_NUMBER'),
     from: requiredEnv('TWILIO_FROM_NUMBER'),
     twiml: briefingTwiml(briefing, baseUrl),
@@ -33,5 +33,4 @@ export async function placeMorningCall({ briefing, baseUrl }) {
     statusCallbackMethod: 'POST',
     statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed'],
   });
-  return call;
 }
