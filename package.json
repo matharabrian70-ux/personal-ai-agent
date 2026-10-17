@@ -1,0 +1,18 @@
+{
+  "name": "personal-ai-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Autonomous personal morning planning and voice briefing agent",
+  "scripts": {
+    "test": "node --test",
+    "start": "node src/server.js",
+    "morning": "node src/morning.js",
+    "migrate": "node src/migrate.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "twilio": "^5.10.3"
+  }
+}
